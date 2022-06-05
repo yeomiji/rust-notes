@@ -11,6 +11,10 @@ path = "src/ch3/main.rs"
 name = "ch4"
 path = "src/ch4/main.rs"
 
+[[bin]]
+name = "ch5"
+path = "src/ch5/main.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
