@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
+name = "ch2"
+path = "src/ch2/main.rs"
+
+[[bin]]
 name = "ch3"
 path = "src/ch3/main.rs"
 

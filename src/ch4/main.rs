@@ -1,102 +1,131 @@
-const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
-
 fn main() {
-    let x = 5;
-    let x = x + 1;
+    let s = "hello";
     {
-        let x = x * 2;
-        println!("The value of x in the inner scope is: {}", x); // 12
+        let s = "hello";
     }
-    println!("The value of x is: {}", x); // 6
+    let mut s = String::from("hello");
+    s.push_str(", world!");
+    println!("{}", s);
 
-    // shadowing only available when redefining (not for mutable variables)
-    let spaces = "   ";
-    let spaces = spaces.len();
+    {
+        let s = String::from("hello");
+    } // s is freed after this point == drop(s);
 
-    let tup: (i32, f64, u8) = (500, 6.4, 1);
-    let (x, y, z) = tup;
-    println!("The value of y is: {}", y);
-    let five_hundred = tup.0;
-    let six_point_four = tup.1;
-    let one = tup.2;
+    let s1 = String::from("hello");
+    let s2 = s1; // ownership is transferred, so can't use s1 now
 
-    let a = [1, 2, 3, 4, 5];
-    let a: [i32; 5] = [1, 2, 3, 4, 5];
-    let a = [3; 5]; // [3,3,3,3,3]
-    let a = [1, 2, 3, 4, 5];
-    let first = a[0];
-    let second = a[1];
+    let s1 = String::from("hello");
+    let s2 = s1.clone(); // clone to explicitly create a deep copy
+    println!("s1 = {}, s2 = {}", s1, s2);
 
-    another_function(5);
-    print_labeled_measurement(5, 'h');
+    let x = 5;
+    let y = x; // ownership not transferred, the data type (i32) implements the Copy trait
+    println!("x = {}, y = {}", x, y);
 
-    let y = {
-        let x = 3;
-        // this is an expression not a statement, hence no semicolon
-        x + 1
-    };
-    println!("The value of y is: {}", y);
+    let s = String::from("hello");
+    takes_ownership(s);
+    // println!("{}", s); <- can't do this since ownership is transferred
+    let x = 5;
+    makes_copy(x);
+    println!("{}", x);
+    let x = String::from("hello");
+    let x = takes_and_gives_back(x);
+    println!("{}", x);
 
-    let x = five();
-    println!("The value of x is: {}", x);
+    let s1 = String::from("hello");
+    let len = calculate_length(&s1);
+    println!("{}", len);
 
-    let x = plus_one(5);
-    println!("The value of x is: {}", x);
+    let mut s = String::from("hello");
+    change(&mut s);
+    println!("{}", s);
 
-    let number = 6;
-    if number % 4 == 0 {
-        println!("number is divisible by 4");
-    } else if number % 3 == 0 {
-        println!("number is divisible by 3");
-    } else if number % 2 == 0 {
-        println!("number is divisible by 2");
-    } else {
-        println!("number is not divisible by 4, 3, or 2");
+    let mut s = String::from("hello");
+    let r1 = &mut s;
+    // s.push_str(", world!"); <- s cannot be used anymore
+    r1.push_str(", world!");
+    // let r2 = &mut s; <- multiple borrows
+    println!("{}", r1);
+
+    // using scopes is fine
+    let mut s = String::from("hello");
+    {
+        let r1 = &mut s;
     }
+    let r2 = &mut s;
+    println!("{}", r2);
 
-    let condition = true;
-    let number = if condition { 5 } else { 6 };
-    println!("The value of number is: {}", number);
+    let mut s = String::from("hello");
+    let r1 = &s; // no problem
+    let r2 = &s; // no problem
+    // let r3 = &mut s; // can't use a mutable reference while immutable references are held
+    // println!("{}, {}, and {}", r1, r2, r3);
+    println!("{}, {}", r1, r2); // can use before
 
-    let mut counter = 0;
-    let result = loop {
-        counter += 1;
-        if counter == 10 {
-            break counter * 2;
+    let r3 = &mut s; // since r1, r2 have been used
+    println!("{}", r3);
+
+
+    let s = String::from("hello world");
+    let hello = &s[0..5];
+    let world = &s[6..11];
+
+    let slice = &s[0..2];
+    let slice = &s[..2];
+    let slice = &s[3..len];
+    let slice = &s[3..];
+
+    let mut s = String::from("hello world");
+    let hello = first_word(&s); // deref coercion
+    let hello = first_word(&s[..]);
+    // s.clear(); // can't do this since hello is an immutable reference to s
+    println!("{}", hello);
+    s.clear(); // but can do this here since hello has been used
+    let s = "hello world!";
+    let s = first_word(s); // since literals are already a slice
+    let s = first_word(&s);
+    let s = first_word(&s[..]);
+    println!("{}", s);
+
+    // also for arrays
+    let a = [1, 2, 3, 4, 5];
+    let slice = &a[1..3];
+    assert_eq!(slice, &[2, 3]);
+}
+
+fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
         }
-    };
-    println!("The result is {}", result);
-
-    let mut number = 3;
-    while number != 0 {
-        println!("{}!", number);
-        number -= 1;
     }
-    println!("LIFTOFF!!!");
-
-    let a = [10, 20, 30, 40, 50];
-    for element in a {
-        println!("the value is: {}", element);
-    }
-
-    for number in (1..4).rev() {
-        println!("{}!", number);
-    }
-    println!("LIFTOFF!!!");
+    &s[..]
 }
 
-fn another_function(x: i32) {
-    println!("The value of x is: {}", x);
+// fn dangle() -> &String {
+//     let s = String::from("hello");
+//     &s <- not allowed to return a reference to an object which will be dropped
+// }
+
+fn change(s: &mut String) -> usize {
+    s.push_str(", world");
+    s.len()
 }
 
-fn print_labeled_measurement(value: i32, unit_label: char) {
-    println!("The measurement is: {}{}", value, unit_label);
+fn calculate_length(s: &String) -> usize {
+    // s.push_str(", world"); <- cannot modify references
+    s.len()
 }
 
-fn five() -> i32 {
-    5
+fn takes_ownership(some_string: String) {
+    println!("{}", some_string);
 }
 
-fn plus_one(x: i32) -> i32 {
-    x + 1
+fn makes_copy(some_integer: i32) {
+    println!("{}", some_integer);
+}
+
+fn takes_and_gives_back(a_string: String) -> String {
+    a_string
 }
