@@ -6,6 +6,7 @@ edition = "2021"
 [workspace]
 members = [
     "src/ch7/restaurant",
+    "src/ch11/adder",
 ]
 
 [[bin]]
@@ -43,6 +44,10 @@ path = "src/ch9/main.rs"
 [[bin]]
 name = "ch10"
 path = "src/ch10/main.rs"
+
+[[bin]]
+name = "ch11"
+path = "src/ch11/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
