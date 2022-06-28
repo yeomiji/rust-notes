@@ -8,6 +8,10 @@ members = [
     "src/ch7/restaurant",
     "src/ch11/adder",
     "src/ch12/minigrep",
+    "src/ch14",
+    "src/ch14/workspaces",
+    "src/ch14/workspaces/adder2",
+    "src/ch14/workspaces/add_one2",
 ]
 
 [[bin]]
@@ -49,10 +53,6 @@ path = "src/ch10/main.rs"
 [[bin]]
 name = "ch11"
 path = "src/ch11/main.rs"
-
-[[bin]]
-name = "ch12"
-path = "src/ch12/main.rs"
 
 [[bin]]
 name = "ch13"
