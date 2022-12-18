@@ -13,6 +13,7 @@ members = [
     "src/ch14/workspaces/adder2",
     "src/ch14/workspaces/add_one2",
     "src/ch15",
+    "src/ch16",
 ]
 
 [[bin]]
