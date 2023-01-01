@@ -15,6 +15,7 @@ members = [
     "src/ch15",
     "src/ch16",
     "src/ch17",
+    "src/ch18",
 ]
 
 [[bin]]
